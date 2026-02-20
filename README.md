@@ -1,337 +1,588 @@
-### Algorand dApp Quick Start Guide (Base Template)
+# BountyHub - Decentralized Bounty Management Platform
 
-This guide helps non‑technical founders and developers quickly prototype and test Web3 ideas on Algorand using this starter. You’ll set up the project, customize the UI via safe AI prompts, mint tokens and NFTs, and interact with smart contracts.
+A **decentralized bounty management platform** built on the Algorand Testnet using AlgoKit.
 
-- Repo to fork/clone: `https://github.com/marotipatre/Hackseries-2-QuickStart-template` (source)
-- Works with AlgoKit monorepo structure (contracts + React frontend)
-- Includes prebuilt “cards” demonstrating key patterns:
-  - Counter: simple contract interaction
-  - Bank: complex interaction with contract + Indexer
-  - Asset Create: mint fungible tokens (ASAs)
-  - NFT Mint: upload to IPFS and mint ARC NFTs
-  - Payments: send ALGO and ASA (e.g., USDC)
+It solves trust issues in freelance and hackathon-style bounty systems by introducing:
 
-[Base template repo](https://github.com/marotipatre/Hackseries-2-QuickStart-template)
+🔐 **On-chain escrow for every bounty**
+💰 **Secure fund locking inside smart contracts**
+⚖ **Transparent approval & payout logic**
+📜 **Immutable state tracking**
+
+
+## 🌟 What It Does
+
+**BountyHub enables:**
+
+🧑‍💻 **Creators** to post bounties with locked escrow funds  
+👨‍🔧 **Workers** to submit work on-chain  
+🔐 **Smart contract–secured** payout logic  
+⚡ **Transparent and tamper-proof** fund management  
+
+**Unlike traditional bounty platforms, funds are secured by an Algorand smart contract — eliminating trust issues between creators and contributors.**
+
+## 🎯 Problem Statement
+
+### RIFT Track: Build on Algorand
+
+
+**Freelance bounty platforms today rely on centralized trust, leading to payment disputes, delayed settlements, and lack of transparency between creators and contributors.**
+
+### Our Interpretation
+
+Freelance and hackathon bounty systems suffer from:
+- ❌ **Payment disputes** - Who paid whom?
+- ❌ **Lack of transparency** - Centralized database
+- ❌ **Manual verification** - No automated proof
+- ❌ **Centralized control** - Platform owns the system
+- ❌ **Trust issues** - Both parties at risk
+
+### Our Solution
+
+An Algorand **smart contract–powered bounty escrow system** that:
+
+✅ Locks funds inside an **Application Account**  
+✅ Verifies submission logic **on-chain**  
+✅ Releases funds only when **conditions are satisfied**  
+✅ Maintains transparent state via **blockchain**  
+✅ Zero intermediaries between creator and worker
+
 
 ---
 
-## 1) Project Setup
+## � Live Links & Deployment
 
-Prerequisites:
-- Docker (running)
-- Node.js 18+ and npm
-- AlgoKit installed (see official docs)
+### 🌐 Live Frontend
+**Your Live URL:** [Update with your Vercel/hosted URL](https://your-live-demo-url.com)
 
-Clone or fork the base template:
+### 🎥 Demo Video (LinkedIn)
+**LinkedIn Demo Video (2–3 min):**  
+[Update with your LinkedIn video URL](https://linkedin.com/your-demo-video-link)
 
-```bash
-git clone https://github.com/marotipatre/Hackseries-2-QuickStart-template.git
-cd Hackseries-2-QuickStart-template
+**Video includes:**
+- ✅ Live Testnet interaction
+- ✅ Smart contract calls  
+- ✅ Escrow funding
+- ✅ Work submission & approval
+- ✅ Payout logic
+- ✅ Architecture explanation
+
+**Tagged:** https://www.linkedin.com/company/rift-pwioi/
+
+### 🧾 Smart Contract (Testnet)
+
+## Each new bounty generates a new App ID with its own escrow account.
+
+| Item | Value |
+|------|-------|
+| **App ID** | `755780805` |
+| **Network** | Algorand Testnet |
+| **Explorer** | [View on Pera Explorer](https://testnet.explorer.perawallet.app/application/755780805) |
+| **Framework** | AlgoKit + PyTeAL/Beaker |
+
+
+
+---
+
+## 📋 Problem Statement & Solution
+
+### RIFT Track Selection
+**Track:** Build on Algorand 
+**Requirement:** Build a decentralized solution that meaningfully leverages Algorand blockchain beyond simple payments
+
+### Problem Our Solution Addresses
+
+**Traditional Bounty Platforms Have:**
+- ❌ Payment disputes & trust issues
+- ❌ Lack of transparency (centralized database)
+- ❌ Manual verification processes
+- ❌ High platform fees & centralized control
+- ❌ Geographic & access restrictions
+
+### How BountyHub Solves It
+
+| Problem | Traditional | BountyHub |
+|---------|-------------|-----------|
+| **Fund Safety** | Platform holds funds | Smart contract escrow (on-chain) |
+| **Verification** | Manual review | On-chain validation |
+| **Transparency** | Centralized logs | Blockchain immutable records |
+| **Trust** | Platform dependent | Cryptographically verified |
+| **Speed** | Days | Minutes (atomic transactions) |
+| **Control** | Platform decides | Smart contract executes code |
+
+---
+
+---
+
+## 🏗️ Architecture Overview
+
+### Smart Contract Layer (Algorand)
+
+Built using:
+- ✅ **AlgoKit** - Official Algorand development framework
+- ✅ **PyTeAL / Beaker** - Python-based smart contract language
+- ✅ **Deployed on Algorand Testnet** - App ID: 755780805
+
+#### Contract Responsibilities
+
+| Function | Purpose |
+|----------|---------|
+| `create_bounty()` | Locks escrow funds in Application Account |
+| `claim()` | Worker claims bounty (can only claim once) |
+| `submit_work()` | Worker submits completed work on-chain |
+| `approve_work()` | Creator approves & releases payment |
+
+
+#### On-Chain Storage
+
+```
+Global State
+├── creator: Address      # Who created the bounty
+├── worker: Address       # Who claimed the bounty  
+├── amount: UInt64        # Bounty amount (microAlgos)
+└── status: UInt64        # 0=Active, 1=Claimed, 2=Completed
+
+Application Account
+└── Holds escrow funds securely until approval
 ```
 
-Bootstrap the workspace (installs deps, sets up venv, etc.):
+### Frontend Layer
 
-```bash
-algokit project bootstrap all
+Built using:
+- **React + TypeScript** - Modern UI framework
+- **Wallet Integration** - Pera Wallet / Defly / MyAlgo
+- **Algorand JS SDK** - Direct Algod API calls
+- **Atomic Transaction Grouping** - Secure multi-step transactions
+
+#### User Flow
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     User Actions                            │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  Creator Path                      Worker Path             │
+│  ═══════════                        ════════════            │
+│  1. Connect Wallet                 1. Connect Wallet      │
+│  2. Post Bounty                    2. Opt-in to App      │
+│  3. Send funds to App              3. Submit Work        │
+│  4. Approve Submission             4. Wait for Approval  │
+│  5. Smart Contract releases $      5. Receive Payment    │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+                            │
+                            ↓
+            ┌──────────────────────────────┐
+            │  Algorand Testnet            │
+            │  Smart Contract (755780805)  │
+            │                              │
+            │  • Validates conditions      │
+            │  • Manages escrow funds      │
+            │  • Executes atomic releases  │
+            │                              │
+            └──────────────────────────────┘
+│  │  ┌────────────────────────────────────────────┐    │   │
+│  │  │  Bounty App Contract                       │    │   │
+│  │  │  • create_bounty(amount)                   │    │   │
+│  │  │  • claim_bounty()                          │    │   │
+│  │  │  • approve_bounty()                        │    │   │
+│  │  │  • cancel_bounty()                         │    │   │
+│  │  └────────────────────────────────────────────┘    │   │
+│  │                                                      │   │
+│  └──────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────┘
+
+
 ```
 
-Build all projects:
+### Transaction Flow
 
-```bash
-algokit project run build
+**Step 1: Bounty Creation**
+```
+Creator → Frontend → Build ApplicationCreateTxn
+       → Sign with Wallet
+       → Send to Blockchain
+       → Extract App ID → Save to localStorage
 ```
 
-Run the frontend:
+**Step 2: Escrow Funding**
+```
+Creator → Frontend → Build PaymentTxn to App Account
+       → Group with AppCall
+       → Sign & Send
+       → Funds locked in Application Account
+```
 
+**Step 3: Work Submission**
+```
+Worker  → Frontend → Opt-in to Application
+       → Call claim() method
+       → Updates on-chain state
+```
+
+**Step 4: Payment Release**
+```
+Creator → Frontend → Call approve()
+       → Smart contract validates
+       → Atomic transfer to worker
+       → Payment complete ✅
+```
+
+
+
+## 🛠️ Tech Stack
+
+### Frontend
+- **Framework:** React 18.X
+- **Language:** TypeScript
+- **Build Tool:** Vite
+- **Styling:** Tailwind CSS
+- **Animations:** Framer Motion
+- **State Management:** React Hooks
+- **Wallet Integration:** @txnlab/use-wallet-react
+- **UI Components:** Shadcn/ui
+- **Icons:** Lucide React
+
+### Smart Contracts
+- **Language:** PyTEAL (Python Algorand Development Toolkit)
+- **Framework:** Beaker
+- **Compiler:** TEAL (Algorand Virtual Machine)
+- **Contract Language Version:** TEAL v10
+
+### Backend / Deployment
+- **Framework:** AlgoKit (Algorand Kit)
+- **Package Manager:** Poetry (Python)
+- **Testing:** pytest
+- **Network:** Algorand Testnet
+
+### Blockchain
+- **Network:** Algorand Testnet
+- **SDK:** algosdk (TypeScript)
+- **Node:** Algonode (https://testnet-api.algonode.cloud)
+
+---
+
+## 📦 Installation & Setup
+
+### Prerequisites
+- **Node.js** 16+ with npm/pnpm
+- **Python** 3.10+ with Poetry
+- **Algorand Sandbox** or Algonode access
+- **Pera Wallet** or **MyAlgo Wallet** browser extension
+
+### Step 1: Clone Repository
+```bash
+git clone https://github.com/yourusername/bounty-hub.git
+cd bounty-hub
+```
+
+### Step 2: Install Frontend Dependencies
 ```bash
 cd projects/frontend
-npm install
-npm run dev
+pnpm install
 ```
 
-Optional: alternative starter to compare or borrow patterns from:
-
+### Step 3: Install Smart Contract Dependencies
 ```bash
-git clone https://github.com/Ganainmtech/Algorand-dApp-Quick-Start-Template-TypeScript.git
+cd ../contracts
+poetry install
 ```
 
-References:
-- Algorand Developer Portal: `https://dev.algorand.co/`
-- AlgoKit Workshops: `https://algorand.co/algokit-workshops`
-- Algodevs YouTube: `https://www.youtube.com/@algodevs`
+### Step 4: Configure Environment Variables
 
----
-
-## 2) Required environment variables (Frontend)
-
-Create `projects/frontend/.env` with the following values for TestNet (adjust as needed):
-
+**Frontend (.env.local):**
 ```bash
-# Network (Algod)
 VITE_ALGOD_SERVER=https://testnet-api.algonode.cloud
-VITE_ALGOD_PORT=
 VITE_ALGOD_TOKEN=
-VITE_ALGOD_NETWORK=testnet
-
-# Indexer (for Bank/indexed reads)
-VITE_INDEXER_SERVER=https://testnet-idx.algonode.cloud
-VITE_INDEXER_PORT=
-VITE_INDEXER_TOKEN=
-
-# Optional: KMD (if using a local KMD wallet)
-VITE_KMD_SERVER=http://localhost
-VITE_KMD_PORT=4002
-VITE_KMD_TOKEN=a-super-secret-token
-VITE_KMD_WALLET=unencrypted-default-wallet
-VITE_KMD_PASSWORD=some-password
-
-# Pinata (NFT media + metadata to IPFS)
-# Generate a JWT in Pinata and paste below
-VITE_PINATA_JWT=eyJhbGciOi...  # JWT from Pinata
-# Optional: custom gateway
-VITE_PINATA_GATEWAY=https://gateway.pinata.cloud/ipfs
+VITE_NETWORK=testnet
 ```
 
-Notes:
-- Algod/Indexer config is read by `src/utils/network/getAlgoClientConfigs.ts`:
-  - `VITE_ALGOD_SERVER`, `VITE_ALGOD_PORT`, `VITE_ALGOD_TOKEN`, `VITE_ALGOD_NETWORK`
-  - `VITE_INDEXER_SERVER`, `VITE_INDEXER_PORT`, `VITE_INDEXER_TOKEN`
-- Pinata integration expects `VITE_PINATA_JWT` and optional `VITE_PINATA_GATEWAY` for NFT uploads (see `src/utils/pinata.ts`).
-- Restart the dev server after editing `.env`.
-
-Pinata API keys/JWT: create via Pinata dashboard `https://app.pinata.cloud/developers/api-keys` and use the generated JWT.
-
----
-
-## 3) Project map (what to tweak)
-
-Frontend location: `projects/frontend`
-
-Key files:
-- `src/Home.tsx` — Landing page
-- `src/components/Transact.tsx` — Payments (ALGO, template for ASA)
-- `src/components/Bank.tsx` — Contract + Indexer demo (deploy, deposit, withdraw, statements, depositors)
-- `src/components/CreateASA.tsx` — Create fungible tokens (ASA)
-- `src/components/MintNFT.tsx` — Mint NFTs with IPFS media/metadata
-- `src/components/AppCalls.tsx` — Example app call wiring to a contract
-- `src/utils/pinata.ts` — Pinata IPFS utilities (file/JSON pin)
-- `src/utils/network/getAlgoClientConfigs.ts` — Network configs from Vite env
-
-Contracts (generated artifacts, clients):
-- `projects/contracts/smart_contracts/**` and `projects/frontend/src/contracts/**`
-
----
-
-## 4) Use AI to redesign UI safely (keep logic intact)
-
-How to work:
-1) Open the target file and copy its full contents.
-2) Paste into your AI tool (ChatGPT/Claude/Gemini).
-3) Use the corresponding prompt below to redesign using TailwindCSS.
-4) Replace only JSX/markup/styles. Do NOT change logic, imports, props, state, handlers, or function calls.
-
-### 4.1 Home (Landing Page)
-
-File: `projects/frontend/src/Home.tsx`
-
-Prompt:
-```
-I'm building an Algorand dApp and want to improve the design of my landing page in projects/frontend/src/Home.tsx. Please redesign the layout using modern web design principles with TailwindCSS. Include:
-- A visually striking hero section with a short headline and subheading
-- A primary call-to-action button that navigates to key features
-- A simple feature grid that highlights the cards: Counter, Bank, Payments, Create Token (ASA), Mint NFT
-- Balanced spacing, responsive design (mobile/desktop), and a Web3/tech-style color theme
-Keep ALL existing logic for wallet connection, navigation, event handlers, and button states EXACTLY as they are — do not change any logic or data flow. Only change the JSX structure and Tailwind classes.
+**Contracts (.env):**
+```bash
+ALGORAND_NETWORK=testnet
+ALGORAND_NODE_SERVER=https://testnet-api.algonode.cloud
+ALGORAND_INDEXER_SERVER=https://testnet-idx.algonode.cloud
 ```
 
-### 4.2 Payments (Transact)
-
-File: `projects/frontend/src/components/Transact.tsx`
-
-Prompt:
-```
-I'm building a payments dApp on Algorand that allows users to send ALGO or USDC to others. I’ve pasted the existing projects/frontend/src/components/Transact.tsx which already contains transaction logic. Please redesign this component using TailwindCSS to look like a clean, modern payment interface:
-- Clear inputs for recipient address and read-only display for amount (1 ALGO in this example)
-- A prominent Send button
-- Helpful labels, subtle validation states, and a simple success message area
-- Responsive, minimal Web3 design aesthetic
-Keep ALL wallet and transaction logic EXACTLY as it is — do not change any function names, props, state variables, or event handlers.
-```
-
-Optional extension prompt (ASA like USDC):
-```
-Extend the UI design to optionally switch between sending ALGO or an ASA (e.g., USDC) without changing existing ALGO logic. Only provide additional JSX blocks and Tailwind classes; do not modify or remove the current payment logic. You can add a new tab-like UI and mock disabled form fields for ASA to show the final look-and-feel.
-```
-
-### 4.3 Bank (Complex contract + Indexer)
-
-File: `projects/frontend/src/components/Bank.tsx`
-
-Prompt:
-```
-This is a "Bank" demo that shows a more complex Algorand contract integration with Indexer queries, boxes, and inner transactions. I’ve pasted projects/frontend/src/components/Bank.tsx. Please enhance the UI with TailwindCSS:
-- Clear App ID input and App Address display
-- Two panels: Deposit (memo + amount) and Withdraw (amount)
-- A status area for loading/spinners and action feedback
-- Paginated, scrollable Statements and Depositors lists, with clear labels and link to explorer
-- Keep it responsive and professional with a dashboard feel
-Do NOT change any logic, props, function names, or data fetching. Only adjust JSX structure and Tailwind classes.
-```
-
-### 4.4 Create ASA (Fungible tokens)
-
-File: `projects/frontend/src/components/CreateASA.tsx`
-
-Prompt:
-```
-I'm building a loyalty/stablecoin-like token on Algorand. I’ve included projects/frontend/src/components/CreateASA.tsx with working ASA creation logic. Please redesign the component using TailwindCSS to present a professional token creation form:
-- Inputs: Token Name, Unit/Symbol, Decimals, Total Supply (base units)
-- A clear, primary "Create Token" button with loading/disabled states
-- A compact help text about each field
-- Minimal dashboard style consistent with the rest of the app
-Keep ALL minting and wallet logic EXACTLY as-is — change ONLY layout and Tailwind classes.
-```
-
-### 4.5 Mint NFT (IPFS + ARC NFT)
-
-File: `projects/frontend/src/components/MintNFT.tsx`
-
-Prompt:
-```
-I'm building an Algorand-based NFT dApp that allows users to mint digital collectibles. I’ve pasted projects/frontend/src/components/MintNFT.tsx which already includes upload to IPFS and NFT mint logic. Please redesign using TailwindCSS:
-- Upload field for image/file with preview
-- Inputs for Name and Description
-- Display upload and mint progress (spinners, progress bars, small status messages)
-- A primary "Mint NFT" button with clear disabled/loading states
-- A link to view the NFT/metadata via the configured IPFS gateway
-Keep ALL wallet, IPFS (Pinata), and minting logic EXACTLY as-is — modify only JSX and Tailwind classes.
-```
-
----
-
-## 5) NFT Environment (Pinata + IPFS)
-
-- Create Pinata API Key/JWT: `https://app.pinata.cloud/developers/api-keys`
-- Put JWT in `projects/frontend/.env` as `VITE_PINATA_JWT`
-- Optional: set `VITE_PINATA_GATEWAY` to your preferred gateway
-- Restart dev server after changing `.env`:
+### Step 5: Deploy Smart Contracts
 
 ```bash
-npm run dev
+cd contracts
+# Compile contracts
+poetry run python -m smart_contracts.bounty.deploy_config
+
+# Deploy to Testnet
+poetry run algokit deploy testnet
 ```
 
-NFT flow uses:
-- `src/utils/pinata.ts` (expects `VITE_PINATA_JWT`, optional `VITE_PINATA_GATEWAY`)
-- `pinFileToIPFS` and `pinJSONToIPFS` endpoints
+**Note:** Save the **App ID** from deployment output for submission.
+
+### Step 6: Start Frontend Development Server
+
+```bash
+cd ../frontend
+pnpm dev
+```
+
+Access at: **http://localhost:5174**
 
 ---
 
-## 6) Smart Contract interaction basics
+## 🎮 Usage Guide
 
-- Example TS clients are generated into `projects/frontend/src/contracts`
-- Frontend demo wiring in `src/components/AppCalls.tsx`
-- Use Bank/Counter cards to explore app call patterns, boxes, and Indexer usage
+### Creating a Bounty
 
-Learn more:
-- Algorand Dev Portal: `https://dev.algorand.co/`
-- AlgoKit Workshops: `https://algorand.co/algokit-workshops`
-- Algodevs YouTube: `https://www.youtube.com/@algodevs`
+## 📖 Usage Guide
+
+### 👤 Creator Flow - Posting a Bounty
+
+#### 1️⃣ Connect Wallet
+```
+1. Click "Connect Wallet"
+2. Select Pera / Defly / MyAlgo
+3. Approve connection
+```
+
+#### 2️⃣ Create Bounty
+```
+1. Click "+ Create Bounty" button
+2. Fill in details:
+   - Title: "Build token dashboard"
+   - Description: "Create a React dashboard for token metrics"
+   - Reward: "5" (ALGO)
+   - Category: Backend
+   - Difficulty: Hard
+3. Click "Create Bounty"
+```
+
+#### 3️⃣ Transaction Signing (2 txns)
+```
+Pera Wallet Shows:
+
+Transaction 1: Create Application
+├── Sender: Your address
+├── Creates new Bounty App
+└── Cost: ~0 (platform fee)
+
+Transaction 2: Fund Escrow
+├── Sender: Your address
+├── Receiver: Application Address
+├── Amount: 5 + 0.1 (escrow funding) ALGO
+└── Status: Locked until approval
+```
+
+#### 4️⃣ Bounty Live
+```
+✅ Bounty now appears in "All Bounties"
+✅ Funds locked in Application Account
+✅ Workers can now claim
+✅ You see it in "My Bounties"
+```
+
+### 👨‍🔧 Worker Flow - Claiming & Submitting Work
+
+#### 1️⃣ Find a Bounty
+```
+1. Click "All Bounties"
+2. Browse available bounties
+3. Click on bounty to see details
+```
+
+#### 2️⃣ Opt-in to Application
+```
+1. Click "Claim Bounty" button
+2. Sign opt-in transaction
+   └── Allows you to interact with smart contract
+```
+
+#### 3️⃣ Claim Bounty
+```
+1. Click "Claim" button
+2. Sign claim transaction
+   └── Updates on-chain: worker = your address
+3. Bounty status: "Claimed" ✅
+```
+
+#### 4️⃣ Submit Work (Off-chain)
+```
+1. Develop the deliverable
+2. Submit link/code to creator (via chat/email)
+3. Wait for approval...
+```
+
+#### 5️⃣ Receive Payment
+```
+When Creator approves:
+├── Smart contract validates approval
+├── Funds transferred from App Account
+├── Payment received in your wallet ✅
+└── Transaction visible on Testnet Explorer
+```
+
+### 💰 Creator Flow - Approving & Releasing Payment
+
+#### 1️⃣ Review Work
+```
+1. Go to "My Bounties"
+2. Find bounty with status "Claimed"
+3. Review work submission
+```
+
+#### 2️⃣ Approve & Release
+```
+1. Click "Approve & Release Payment"
+2. Sign approval transaction
+   └── Smart contract executes payout logic
+3. Wait for confirmation (~10 seconds)
+```
+
+#### 3️⃣ Payment Complete
+```
+✅ Worker receives: Bounty amount
+✅ Creator pays: Bounty + minimal fees
+✅ Transaction visible on Testnet (App ID: 755780805)
+```
+
+### 🔍 Verifying on Blockchain
+
+```
+1. Go to Pera Explorer:
+   https://testnet.explorer.perawallet.app/application/755780805
+
+2. Look for:
+   ├── Application Calls (claim, approve)
+   ├── Payment Transactions (escrow funding)
+   └── Global State (creator, worker, amount, status)
+
+3. Verify:
+   ✅ Escrow account holds funds
+   ✅ Payment transferred on approval
+   ✅ All transactions grouped atomically
+```
 
 ---
 
-## 7) Card overview and tweak ideas
+## � Why This Project Meaningfully Uses Algorand
 
-- Counter
-  - Purpose: Simple app call demonstration
-  - Tweak: Typography, spacing, and success toast placement
-  - AI tip: “Add a hero-like header; keep all state/handlers/contract calls unchanged.”
+This project demonstrates blockchain use cases **beyond simple payments**:
 
-- Bank
-  - Purpose: Complex contract with deposit/withdraw and Indexer reads
-  - Tweak: Two-column layout, data tables with pagination, explorer links
-  - AI tip: “Make statements/depositors scrollable; maintain all function names and handlers.”
+### ✅ Smart Contract Escrow Management
+```
+Traditional:     Creator → Platform → Worker
+BountyHub:       Creator → Smart Contract Account → Worker
+                 (Funds locked until conditions met)
+```
 
-- Payments (Transact)
-  - Purpose: Send ALGO (and optionally mock ASA UI)
-  - Tweak: Input clarity, action emphasis, subtle validation messaging
-  - AI tip: “Keep existing ALGO logic identical; ASA tab as UI-only demo.”
+### ✅ Atomic Transaction Grouping
+```
+Multi-step logic executed atomically:
+1. Verifyapproval condition
+2. Transfer from escrow account
+3. All succeed or all fail - no partial states
+```
 
-- Create ASA
-  - Purpose: Mint fungible token
-  - Tweak: Professional form design, helper text for decimals/total
-  - AI tip: “Do not change the `algorand.send.assetCreate` call; style form and loading states.”
+### ✅ On-Chain State Management
+```
+Global State (immutable record):
+├── creator:  Who posted the bounty
+├── worker:   Who claimed it
+├── amount:   Bounty value
+└── status:   Current state (Active → Claimed → Completed)
+```
 
-- Mint NFT
-  - Purpose: Upload media/metadata to IPFS, mint an ARC NFT
-  - Tweak: File upload preview, progress messages, gateway links
-  - AI tip: “Keep Pinata calls and NFT mint logic intact; enhance UI and progress indicators.”
+### ✅ Application Account Model
+```
+Each bounty gets its own app-controlled account:
+├── Holds escrow funds securely
+├── Only releases with creator approval
+├── Can't be accessed by any single user
+└── Transparent & verifiable on blockchain
+```
+
+### ✅ AlgoKit Framework Integration
+```
+Uses official Algorand toolkit:
+✅ Smart contract scaffolding
+✅ Deployment pipeline
+✅ Testing framework
+✅ LocalNet development
+✅ Production deployment
+```
+
+### Not Just Payments
+
+| Aspect | Why Algorand Matters |
+|--------|---------------------|
+| **Escrow** | Smart contract enforces conditions, not platform |
+| **Trust** | Cryptographic verification, not corporate policy |
+| **Transparency** | Every transaction on immutable ledger |
+| **Speed** | 4-second finality (vs. traditional 3-5 days) |
+| **Cost** | $0.001 per transaction (vs. 20-30% platform fee) |
+| **Ownership** | User controls their keys, not platform |
 
 ---
 
-## 8) Troubleshooting
+## �📸 Screenshots
 
-- “Missing VITE_ALGOD_SERVER”
-  - Ensure `.env` exists in `projects/frontend` and values are set
-  - Restart `npm run dev`
+### Home Page
+![Home Page](./projects/frontend/public/screenshots/home.png)
 
-- “Missing VITE_PINATA_JWT” or IPFS upload fails
-  - Generate JWT in Pinata dashboard and add to `.env`
-  - Confirm gateway works or remove custom gateway (defaults to `https://ipfs.io/ipfs`)
+### Create Bounty Modal
+![Create Bounty](./projects/frontend/public/screenshots/create-bounty.png)
 
-- Indexer queries return empty
-  - Verify `VITE_INDEXER_SERVER` is a TestNet Indexer and `VITE_ALGOD_NETWORK=testnet`
-  - Confirm correct App ID in Bank card
+### All Bounties View
+![All Bounties](./projects/frontend/public/screenshots/all-bounties.png)
 
-- Transactions fail
-  - Ensure wallet is connected and funded
-  - For Bank, input a valid App ID or deploy via the card
+### My Bounties View
+![My Bounties](./projects/frontend/public/screenshots/my-bounties.png)
 
 ---
 
-## 9) CI/CD (Optional)
 
-- Integrate with GitHub Actions for lint/type/test and deployments.
-- Deploy smart contracts via `algokit deploy`.
-- Deploy frontend to Vercel/Netlify; add these `.env` variables to hosting settings.
+```typescript
+const ALGOD_SERVER = "https://testnet-api.algonode.cloud";
+const ALGOD_TOKEN = "";
+const NETWORK = "testnet";
+```
+
+
+## 🚀 Deployment
+
+### Deploying to Production
+
+1. **Smart Contract Deployment:**
+   ```bash
+   cd projects/contracts
+   # Deploy to Mainnet (after audit)
+   poetry run algokit deploy mainnet
+   ```
+
+2. **Frontend Deployment (Vercel):**
+   ```bash
+   cd projects/frontend
+   pnpm run build
+   # Connect GitHub repo to Vercel for automatic deploys
+   ```
+
+3. **Update Configuration:**
+   - Update `.env` with Mainnet App ID
+   - Update README with Mainnet links
 
 ---
 
-## 10) Copy‑ready AI Prompt Snippets
+## 👥 Team Members & Roles
 
-Use these verbatim as you work card‑by‑card:
-
-- Home:
-```
-Redesign projects/frontend/src/Home.tsx using TailwindCSS for a modern Web3 landing page with a strong hero, concise subtitle, and a grid of feature cards (Counter, Bank, Payments, Create Token, Mint NFT). Keep all wallet/navigation logic, props, and handlers EXACTLY as-is. Modify only JSX and Tailwind classes.
-```
-
-- Transact:
-```
-Redesign projects/frontend/src/components/Transact.tsx into a clean payments UI (recipient input, 1 ALGO send button, success message area). Keep ALL existing logic and handlers unchanged. Modify only JSX/Tailwind. Optionally add an ASA tab UI mock without changing logic.
-```
-
-- Bank:
-```
-Enhance projects/frontend/src/components/Bank.tsx with a dashboard feel: App ID input, deploy section, deposit/withdraw cards, scrollable statements and depositors lists with explorer links. Maintain ALL logic and calls as-is; only update layout and Tailwind classes.
-```
-
-- Create ASA:
-```
-Redesign projects/frontend/src/components/CreateASA.tsx to a professional token creation form with inputs (Name, Unit, Decimals, Total), helper text, and a prominent Create button with loading state. Keep all ASA creation logic intact; change only JSX/Tailwind.
-```
-
-- Mint NFT:
-```
-Redesign projects/frontend/src/components/MintNFT.tsx for a sleek NFT minter: file upload with preview, name/description fields, visible Mint button, and progress indicators. Keep Pinata, IPFS, and mint logic untouched; only adjust JSX/Tailwind.
-```
+| Name | Role | 
+|------|------|
+| Prajwal G | Smart Contract & Backend |
+| Pooja Kumari | Frontend | 
+| Rakshith C | Frontend | 
+| Sohum Venkatadri | Smart Contract | 
 
 ---
 
-Links cited:
-- Base template repo: [marotipatre/Hackseries-2-QuickStart-template](https://github.com/marotipatre/Hackseries-2-QuickStart-template)
-- Algorand Developer Portal: `https://dev.algorand.co/`
-- AlgoKit Workshops: `https://algorand.co/algokit-workshops`
-- Algodevs YouTube: `https://www.youtube.com/@algodevs`
-- Pinata API Keys: `https://app.pinata.cloud/developers/api-keys`
+## 📄 License
 
+This project is licensed under the **MIT License** - see [LICENSE](./LICENSE) file for details.
 
+---
